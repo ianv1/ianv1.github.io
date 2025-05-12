@@ -3,156 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ian Eng</title>
-  <link rel="stylesheet" href="style.css">
+  <title>The Password Game</title>
   <style>
-    .main-content {
-      max-width: 520px;
-      margin: 60px auto 0 auto;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 2px 24px rgba(37,99,235,0.07);
-      padding: 2.5em 2em 2em 2em;
-      opacity: 0;
-      transform: translateY(40px);
-      animation: fadeSlideIn 1.1s cubic-bezier(.23,1.02,.47,.98) 0.2s forwards;
+    :root {
+      --primary: #2563eb;
+      --success: #10b981;
+      --error: #ef4444;
+      --bg: #f8fafc;
+      --text: #1e293b;
     }
-    @keyframes fadeSlideIn {
-      to {
-        opacity: 1;
-        transform: none;
-      }
-    }
-    .section-title {
-      color: #2563eb;
-      font-size: 1.3rem;
-      font-weight: 800;
-      margin-bottom: 0.7em;
-      margin-top: 2em;
-      letter-spacing: 1px;
-      position: relative;
-      display: inline-block;
-      background: linear-gradient(90deg, #2563eb 60%, #06b6d4 100%);
-      background-size: 200% 100%;
-      background-position: 100% 0;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: highlightTitle 2.2s cubic-bezier(.23,1.02,.47,.98) 0.7s both;
-    }
-    @keyframes highlightTitle {
-      0% {
-        background-position: 100% 0;
-      }
-      60% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 0 0;
-      }
-    }
-    .exp-list, .edu-list {
-      list-style: none;
-      padding: 0;
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .exp-list li, .edu-list li {
-      margin-bottom: 1.5em;
+    .game-container {
+      max-width: 600px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      padding: 24px;
+      margin-top: 40px;
+    }
+    .level-display {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 1em;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .password-input {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      font-size: 1.1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 1em;
+      transition: all 0.2s;
+    }
+    .password-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .requirements {
+      margin: 1.5em 0;
+    }
+    .requirement {
+      padding: 8px 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      background: #f1f5f9;
+      font-size: 0.95rem;
+      transition: all 0.3s;
       opacity: 0;
-      transform: translateY(30px);
-      animation: fadeUpItem 0.7s cubic-bezier(.23,1.02,.47,.98) forwards;
+      transform: translateX(-20px);
     }
-    .exp-list li { animation-delay: 0.4s; }
-    .exp-list li:nth-child(2) { animation-delay: 0.55s; }
-    .exp-list li:nth-child(3) { animation-delay: 0.7s; }
-    .exp-list li:nth-child(4) { animation-delay: 0.85s; }
-    .exp-list li:nth-child(5) { animation-delay: 1s; }
-    .exp-list li:nth-child(6) { animation-delay: 1.15s; }
-    .exp-list li:nth-child(7) { animation-delay: 1.3s; }
-    .edu-list li { animation-delay: 1.5s; }
-    .edu-list li:nth-child(2) { animation-delay: 1.7s; }
-    @keyframes fadeUpItem {
-      to {
-        opacity: 1;
-        transform: none;
-      }
+    .requirement.active {
+      opacity: 1;
+      transform: none;
     }
-    .job-title {
-      font-weight: 700;
-      color: #1e293b;
-      font-size: 1.08em;
+    .requirement.met {
+      background: #dcfce7;
+      color: #166534;
     }
-    .company {
-      color: #64748b;
-      font-size: 1em;
+    .requirement.unmet {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .status {
+      text-align: center;
+      margin-top: 1em;
       font-weight: 500;
     }
-    .date {
-      color: #94a3b8;
-      font-size: 0.97em;
-      margin-left: 0.2em;
+    .success {
+      color: var(--success);
     }
-    .edu-degree {
-      font-weight: 700;
-      color: #1e293b;
-      font-size: 1.08em;
+    .error {
+      color: var(--error);
     }
-    .edu-school {
+    .hint {
+      font-size: 0.9rem;
       color: #64748b;
-      font-size: 1em;
-      font-weight: 500;
-    }
-    @media (max-width: 600px) {
-      .main-content { padding: 1.2em 0.5em; }
+      text-align: center;
+      margin-top: 1em;
     }
   </style>
 </head>
 <body>
-  <div class="main-content">
-    <h1 style="color:#2563eb;font-size:2rem;font-weight:900;margin-bottom:0.2em;">Ian Eng</h1>
-    <div class="section-title">Experience</div>
-    <ul class="exp-list">
-      <li>
-        <span class="job-title">Principal Software Engineer</span> <span class="company">GXBank</span><br>
-        <span class="date">Mar 2025 – Present</span>
-      </li>
-      <li>
-        <span class="job-title">Lead Software Engineer</span> <span class="company">GXBank</span><br>
-        <span class="date">Sep 2022 – Mar 2025</span>
-      </li>
-      <li>
-        <span class="job-title">Senior Software Engineer</span> <span class="company">Shopee</span><br>
-        <span class="date">Mar 2021 – Sep 2022</span>
-      </li>
-      <li>
-        <span class="job-title">Senior Software Engineer</span> <span class="company">ConnectedHealth</span><br>
-        <span class="date">Nov 2017 – Feb 2021</span>
-      </li>
-      <li>
-        <span class="job-title">Senior Associate, Android Developer</span> <span class="company">Astro</span><br>
-        <span class="date">Jun 2017 – Jul 2018</span>
-      </li>
-      <li>
-        <span class="job-title">Android Engineer</span> <span class="company">Fave</span><br>
-        <span class="date">Apr 2016 – Jun 2017</span>
-      </li>
-      <li>
-        <span class="job-title">Pre-Silicon Verification Engineer</span> <span class="company">Intel Corporation</span><br>
-        <span class="date">Aug 2012 – Apr 2016</span>
-      </li>
-    </ul>
-    <div class="section-title">Education</div>
-    <ul class="edu-list">
-      <li>
-        <span class="edu-degree">MEng, Electrical & Electronic Engineering with Management</span><br>
-        <span class="edu-school">Imperial College London</span><br>
-        <span class="date">2008–2012</span>
-      </li>
-      <li>
-        <span class="edu-degree">GCE A Level, Physics, Mathematics, Further Mathematics, Chemistry</span><br>
-        <span class="edu-school">Sunway College</span><br>
-        <span class="date">2006–2008</span>
-      </li>
-    </ul>
+  <div class="game-container">
+    <div class="level-display">Level 1</div>
+    <input type="text" class="password-input" placeholder="Enter your password..." autocomplete="off">
+    <div class="requirements"></div>
+    <div class="status"></div>
+    <div class="hint"></div>
   </div>
+  <script src="game.js"></script>
 </body>
 </html>
